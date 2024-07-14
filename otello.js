@@ -52,9 +52,7 @@ function ValidMove(row,col){
 
         }
     }
-    return false;
 }
-
 
 initBoard();
 renderBoard();
