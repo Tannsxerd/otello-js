@@ -148,3 +148,4 @@ function endGame() {
 initBoard();
 renderBoard();
 promptMove();
+
