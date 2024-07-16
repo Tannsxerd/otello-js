@@ -8,7 +8,7 @@ const rl = readline.createInterface({
     output: process.stdout,
 });
 
-// Build 2D array
+
 for (let row = 0; row < boardSize; row++) {
     board[row] = [];
     for (let col = 0; col < boardSize; col++) {
@@ -16,7 +16,7 @@ for (let row = 0; row < boardSize; row++) {
     }
 }
 
-// Initialize board with starting pieces
+
 function initBoard() {
     board[3][3] = 'W';
     board[3][4] = 'B';
@@ -24,13 +24,13 @@ function initBoard() {
     board[4][4] = 'W';
 }
 
-// Check valid directions
+
 const directions = [
     [0, 1], [1, 0], [0, -1], [-1, 0],
     [1, 1], [1, -1], [-1, 1], [-1, -1]
 ];
 
-// Render the board
+
 function renderBoard() {
     console.clear();
     let position = 1;
@@ -40,7 +40,7 @@ function renderBoard() {
             if (ValidMove(row, col)) {
                 rowString += (position < 10 ? ' ' : '') + position + ' ';
             } else {
-                rowString += ' ' + (board[row][col] || '*') + ' ';
+                rowString += ' ' + (board[row][col] || '.') + ' ';
             }
             position++;
         }
@@ -48,7 +48,6 @@ function renderBoard() {
     }
 }
 
-// Check if the move is valid
 function ValidMove(row, col) {
     if (board[row][col]) return false;
     for (let [dx, dy] of directions) {
@@ -69,7 +68,6 @@ function ValidMove(row, col) {
     return false;
 }
 
-// Make the move and flip the pieces
 function moveandflip(row, col) {
     board[row][col] = currentPlayer;
     for (let [dx, dy] of directions) {
@@ -91,14 +89,22 @@ function moveandflip(row, col) {
     }
 }
 
-// Handle user input
+
 function handleInput(input) {
+
     const position = parseInt(input) - 1;
     const row = Math.floor(position / boardSize);
     const col = position % boardSize;
     if (ValidMove(row, col)) {
         moveandflip(row, col);
         currentPlayer = currentPlayer === 'B' ? 'W' : 'B';
+        if(!hasValidMove()){
+            currentPlayer =  currentPlayer === 'B' ? 'W' : 'B';
+            if (!hasValidMove()) {
+                endGame();
+                return;
+            }
+        }
         renderBoard();
         promptMove();
     } else {
@@ -107,12 +113,38 @@ function handleInput(input) {
     }
 }
 
-// Prompt the user for the next move
+
 function promptMove() {
     rl.question(`Player ${currentPlayer}, enter your move (1-64): `, handleInput);
 }
 
-// Initialize and start the game
+function hasValidMove(){
+    for (let row = 0 ;row <boardSize;row++){
+        for (let col = 0 ;col <boardSize;col++){
+            if(ValidMove(row,col)){
+                return true;
+            }
+        }
+    }
+    return false;
+}
+function endGame() {
+    let blackCount = 0;
+    let whiteCount = 0;
+
+    for (let row = 0; row < boardSize; row++) {
+        for (let col = 0; col < boardSize; col++) {
+            if (board[row][col] === 'B') blackCount++;
+            if (board[row][col] === 'W') whiteCount++;
+        }
+    }
+
+    console.log(`Game over!`);
+    console.log(`Black: ${blackCount}, White: ${whiteCount}`);
+    rl.close();
+}
+
+
 initBoard();
 renderBoard();
 promptMove();
