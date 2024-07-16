@@ -1,5 +1,5 @@
 const readline = require('readline');
-
+boardSize = 8
 
 let board = Array(boardSize).fill(null).map(() => Array(boardSize).fill(null));
 let currentPlayer = 'B';
@@ -11,7 +11,7 @@ const directions = [
 
 const rl = readline.createInterface({
     input: process.stdin,
-    
+    output: process.stdout,
 });
 
 function initializeBoard() {
